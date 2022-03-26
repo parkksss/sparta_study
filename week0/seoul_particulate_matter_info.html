@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery 연습하고 가기!</title>
+
+    <!-- jQuery를 import 합니다 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style type="text/css">
+        div.question-box {
+            margin: 10px 0 20px 0;
+        }
+        .red {
+            color: red;
+        }
+
+    </style>
+
+    <script>
+        function q1() {
+            $('#names-q1').empty();  // 업데이트를 누를 때마다, 새로 리셋!
+            $.ajax({
+                type: "GET",
+                url: "http://spartacodingclub.shop/sparta_api/seoulair", // 서울시 미세먼지 OpenAPI
+                data: {},
+                success: function (response) {
+                    const cities = response['RealtimeCityAir']['row'];
+                    for (let i = 0; i < cities.length; i++) {
+                        const city = cities[i]['MSRSTE_NM'];
+                        const pm = cities[i]['IDEX_MVL'];
+                        let temp_html = ``;
+                        if (pm >= 60 ) {
+                            temp_html = `<li class="red">${city} : ${pm}</li>`;
+                        } else {
+                            temp_html = `<li>${city} : ${pm}</li>`;
+                        }
+                        $('#names-q1').append(temp_html);
+                    }
+                }
+            })
+        }
+    </script>
+
+</head>
+
+<body>
+    <h1>jQuery+Ajax의 조합을 연습하자!</h1>
+
+    <hr />
+
+    <div class="question-box">
+        <h2>1. 서울시 OpenAPI(실시간 미세먼지 상태)를 이용하기</h2>
+        <p>모든 구의 미세먼지를 표기해주세요</p>
+        <p>업데이트 버튼을 누를 때마다 지웠다 새로 씌여져야 합니다.</p>
+        <button onclick="q1()">업데이트</button>
+        <ul id="names-q1">
+            <p>업데이트를 눌러주세요!</p>
+        </ul>
+    </div>
+</body>
+
+</html>
